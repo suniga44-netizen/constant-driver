@@ -1527,7 +1527,8 @@ const Insights: React.FC = () => {
             revenuePerTrip: stats.trips > 0 ? stats.revenue / stats.trips : 0,
         }));
         
-        const bestPlatform = platformPerformance.reduce((max, current) => current.revenuePerTrip > max.revenuePerTrip ? current : max, { platform: undefined, revenuePerTrip: -1 });
+        const initialBestPlatform: { platform: Platform | undefined; revenuePerTrip: number } = { platform: undefined, revenuePerTrip: -1 };
+        const bestPlatform = platformPerformance.reduce((max, current) => current.revenuePerTrip > max.revenuePerTrip ? current : max, initialBestPlatform);
         const bestPlatformResult = bestPlatform.platform
             ? {
                 value: bestPlatform.platform,
@@ -1554,7 +1555,8 @@ const Insights: React.FC = () => {
             costPerKm: stats.distance > 0 ? stats.cost / stats.distance : Infinity,
         }));
 
-        const mostEfficientFuel = fuelPerformance.reduce((min, current) => current.costPerKm < min.costPerKm ? current : min, { fuel: undefined, costPerKm: Infinity });
+        const initialMostEfficientFuel: { fuel: FuelType | undefined; costPerKm: number } = { fuel: undefined, costPerKm: Infinity };
+        const mostEfficientFuel = fuelPerformance.reduce((min, current) => current.costPerKm < min.costPerKm ? current : min, initialMostEfficientFuel);
         const mostEfficientFuelResult = mostEfficientFuel.fuel && mostEfficientFuel.costPerKm !== Infinity
             ? {
                 value: mostEfficientFuel.fuel,
