@@ -1,0 +1,5 @@
+{
+  "name": "Constant Driver",
+  "description": "An application for ride-sharing drivers to track their daily earnings, expenses, and work shifts with detailed reports and filters.",
+  "requestFramePermissions": []
+}
