@@ -3,7 +3,10 @@
   "short_name": "Driver App",
   "description": "An application for ride-sharing drivers to track their daily earnings, expenses, and work shifts with detailed reports and filters.",
   "start_url": "/",
+  "id": "/",
+  "scope": "/",
   "display": "standalone",
+  "orientation": "portrait-primary",
   "background_color": "#111827",
   "theme_color": "#1a202c",
   "icons": [
