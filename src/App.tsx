@@ -1582,7 +1582,7 @@ const Insights: React.FC = () => {
                 platformTripCount[e.platform!]! += e.tripCount!;
             });
 
-        const mostUsedPlatformEntry = Object.entries(platformTripCount).reduce(
+        const mostUsedPlatformEntry = (Object.entries(platformTripCount) as [Platform, number][]).reduce(
             (max, current) => (current[1] > max[1] ? current : max),
             [undefined, -1] as [Platform | undefined, number]
         );
