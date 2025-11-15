@@ -195,7 +195,7 @@ const SummaryCard: React.FC<{
   if (hasGoal) {
     progress = (currentValue / targetValue) * 100;
   }
-  const progressClamped = Math.max(0, Math.min(progress, 100));
+  const progressClamped = (currentValue ?? 0) < 0 ? 0 : Math.min(100, progress);
 
   return (
     <div className="bg-gray-800 rounded-lg p-4 shadow-lg flex flex-col justify-between">
@@ -948,21 +948,21 @@ const AddEntryForm: React.FC<{ type: EntryType; onClose: () => void; entryToEdit
     const numericAmount = parseFloat(amount.replace(',', '.'));
     if (!numericAmount || numericAmount <= 0) return;
 
+    const [year, month, day] = date.split('-').map(Number);
     let entryDate: Date;
+
     if (isEditing && entryToEdit) {
         const originalDateTime = new Date(entryToEdit.date);
-        // The stored date is a naive UTC string, so we need UTC getters to get the original time components
         const hours = originalDateTime.getUTCHours();
         const minutes = originalDateTime.getUTCMinutes();
         const seconds = originalDateTime.getUTCSeconds();
-        entryDate = new Date(`${date}T${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`);
+        entryDate = new Date(year, month - 1, day, hours, minutes, seconds);
     } else {
-        // For new entries, combine the selected date with the current time
         const now = new Date();
         const hours = now.getHours();
         const minutes = now.getMinutes();
         const seconds = now.getSeconds();
-        entryDate = new Date(`${date}T${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`);
+        entryDate = new Date(year, month - 1, day, hours, minutes, seconds);
     }
 
     const entryData = {
@@ -1207,8 +1207,12 @@ const ShiftManager: React.FC<{ onClose: () => void; shiftToEdit: Shift | null }>
             return;
         }
 
-        const shiftStartDate = new Date(`${date}T${startTime}`);
-        let shiftEndDate = new Date(`${date}T${endTime}`);
+        const [year, month, day] = date.split('-').map(Number);
+        const [startHour, startMinute] = startTime.split(':').map(Number);
+        const [endHour, endMinute] = endTime.split(':').map(Number);
+        
+        const shiftStartDate = new Date(year, month - 1, day, startHour, startMinute);
+        let shiftEndDate = new Date(year, month - 1, day, endHour, endMinute);
 
         // Adjust shift end date if it crosses midnight
         if (shiftEndDate < shiftStartDate) {
@@ -1221,8 +1225,11 @@ const ShiftManager: React.FC<{ onClose: () => void; shiftToEdit: Shift | null }>
             pauses: pauses
                 .filter(p => p.start && p.end)
                 .map(p => {
-                    let pauseStartDate = new Date(`${date}T${p.start}`);
-                    let pauseEndDate = new Date(`${date}T${p.end}`);
+                    const [pauseStartHour, pauseStartMinute] = p.start.split(':').map(Number);
+                    const [pauseEndHour, pauseEndMinute] = p.end.split(':').map(Number);
+
+                    let pauseStartDate = new Date(year, month - 1, day, pauseStartHour, pauseStartMinute);
+                    let pauseEndDate = new Date(year, month - 1, day, pauseEndHour, pauseEndMinute);
 
                     // If a pause's start time is earlier than the shift's start time,
                     // it must belong to the next day.
@@ -1361,7 +1368,7 @@ const GoalsView: React.FC<{ onOpenModal: (type: ModalType) => void }> = ({ onOpe
 
 const GoalProgressCard: React.FC<{ title: string; currentValue: number; targetValue: number; format: (value: number) => string; }> = ({ title, currentValue, targetValue, format }) => {
   const progress = targetValue > 0 ? (currentValue / targetValue) * 100 : 0;
-  const progressClamped = Math.min(progress, 100);
+  const progressClamped = currentValue < 0 ? 0 : Math.min(100, progress);
 
   return (
     <div className="bg-gray-800 p-4 rounded-lg shadow-lg">
@@ -1564,18 +1571,42 @@ const Insights: React.FC = () => {
               }
             : { value: 'Dados insuficientes', description: 'Nenhum gasto com combustível registrado.' };
 
+        // --- 4. Most Used Platform by Trip Count ---
+        const platformTripCount: { [key in Platform]?: number } = {};
+        entries
+            .filter(e => e.type === EntryType.GAIN && e.platform && e.tripCount && e.tripCount > 0)
+            .forEach(e => {
+                if (!platformTripCount[e.platform!]) {
+                    platformTripCount[e.platform!] = 0;
+                }
+                platformTripCount[e.platform!]! += e.tripCount!;
+            });
+
+        const mostUsedPlatformEntry = Object.entries(platformTripCount).reduce(
+            (max, current) => (current[1] > max[1] ? current : max),
+            [undefined, -1] as [Platform | undefined, number]
+        );
+
+        const mostUsedPlatform = mostUsedPlatformEntry[0];
+        const mostUsedPlatformResult = mostUsedPlatform
+            ? {
+                value: mostUsedPlatform,
+                description: `${mostUsedPlatformEntry[1]} viagens registradas`
+              }
+            : { value: 'Dados insuficientes', description: 'Nenhuma viagem com plataforma registrada.' };
 
         return {
             mostProfitableDay: mostProfitableDayResult,
             bestPlatform: bestPlatformResult,
             mostEfficientFuel: mostEfficientFuelResult,
+            mostUsedPlatform: mostUsedPlatformResult,
         };
     }, [entries]);
 
     return (
         <div className="p-4 space-y-6">
             <h2 className="text-2xl font-bold text-white">Insights</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <InsightCard 
                     title="Dia Mais Lucrativo"
                     value={insights.mostProfitableDay.value}
@@ -1590,6 +1621,11 @@ const Insights: React.FC = () => {
                     title="Combustível Mais Eficiente"
                     value={insights.mostEfficientFuel.value}
                     description={insights.mostEfficientFuel.description}
+                />
+                <InsightCard 
+                    title="Plataforma Mais Usada (Viagens)"
+                    value={insights.mostUsedPlatform.value}
+                    description={insights.mostUsedPlatform.description}
                 />
             </div>
         </div>
