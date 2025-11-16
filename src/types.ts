@@ -1,32 +1,32 @@
 export enum EntryType {
-  GAIN = "GAIN",
-  EXPENSE = "EXPENSE",
+  GAIN = 'GAIN',
+  EXPENSE = 'EXPENSE',
 }
 
 export enum FuelType {
-  ETHANOL = "Etanol",
-  GASOLINE = "Gasolina",
+    ETHANOL = 'Etanol',
+    GASOLINE = 'Gasolina',
 }
 
 export enum Platform {
-  UBER = "Uber",
-  NINE_NINE = "99",
+    UBER = 'Uber',
+    NINE_NINE = '99',
 }
 
 export interface FuelDetails {
-  fuelType: FuelType;
-  pricePerLiter: number;
-  avgConsumption: number;
-  distanceDriven: number;
+    fuelType: FuelType;
+    pricePerLiter: number;
+    avgConsumption: number;
+    distanceDriven: number;
 }
 
 export enum ExpenseCategory {
-  FUEL = "Combustível",
-  RENTAL = "Aluguel de Veículo",
-  MAINTENANCE = "Manutenção",
-  FOOD = "Alimentação",
-  TOLLS = "Pedágios",
-  OTHER = "Outros",
+    FUEL = 'Combustível',
+    RENTAL = 'Aluguel de Veículo',
+    MAINTENANCE = 'Manutenção',
+    FOOD = 'Alimentação',
+    TOLLS = 'Pedágios',
+    OTHER = 'Outros',
 }
 
 export interface Entry {
@@ -52,15 +52,7 @@ export interface Shift {
   }[];
 }
 
-export type Period =
-  | "today"
-  | "yesterday"
-  | "this_week"
-  | "last_7_days"
-  | "this_month"
-  | "last_30_days"
-  | "all"
-  | "custom";
+export type Period = 'today' | 'yesterday' | 'this_week' | 'last_7_days' | 'this_month' | 'last_30_days' | 'all' | 'custom';
 
 export interface Filter {
   period: Period;
@@ -70,8 +62,8 @@ export interface Filter {
   };
 }
 
-export type GoalPeriod = "daily" | "weekly" | "monthly";
-export type GoalType = "profit" | "revenue";
+export type GoalPeriod = 'daily' | 'weekly' | 'monthly';
+export type GoalType = 'profit' | 'revenue';
 
 export interface Goals {
   daily: {
