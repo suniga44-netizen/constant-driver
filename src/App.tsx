@@ -2,7 +2,7 @@ import React, { useState, useMemo, useCallback, useEffect, createContext, useCon
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { Entry, EntryType, Shift, Filter, Period, ExpenseCategory, FuelType, FuelDetails, Platform, Goals } from './types';
 import { getPeriodRange, formatCurrency, formatDuration, calculateShiftDuration, formatNumber, formatHoursMinutes, calculatePauseDuration, toNaiveUTCISOString, formatDateFromNaiveUTC, formatTimeFromNaiveUTC, getLocalDateISOString } from './utils/date';
-import { HomeIcon, ListIcon, SettingsIcon, PlusIcon, XMarkIcon, CurrencyDollarIcon, ArrowDownIcon, ArrowUpIcon, ClockIcon, PlayIcon, PauseIcon, StopIcon, TrashIcon, PencilIcon, TargetIcon, ArrowDownTrayIcon, ArrowUpTrayIcon, SteeringWheelIcon, DocumentArrowDownIcon, DocumentChartBarIcon } from './components/Icons';
+import { HomeIcon, ListIcon, SettingsIcon, PlusIcon, XMarkIcon, CurrencyDollarIcon, ArrowDownIcon, ArrowUpIcon, ClockIcon, PlayIcon, PauseIcon, StopIcon, TrashIcon, PencilIcon, TargetIcon, ArrowDownTrayIcon, ArrowUpTrayIcon, DocumentArrowDownIcon, DocumentChartBarIcon } from './components/Icons';
 
 type AppContextType = {
   entries: Entry[];
@@ -37,7 +37,7 @@ const Header: React.FC = () => {
   return (
     <header className="bg-gray-800 p-4 border-b border-gray-700 shadow-md">
       <div className="flex items-center space-x-3">
-        <SteeringWheelIcon className="w-8 h-8 text-teal-400" />
+        <img src="/logo.png" alt="Constant Driver Logo" className="w-8 h-8" />
         <h1 className="text-2xl font-bold text-white">Constant Driver</h1>
       </div>
     </header>

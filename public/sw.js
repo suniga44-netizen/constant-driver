@@ -1,11 +1,12 @@
 // A version for the cache. Change this value to force the service worker to update.
-const CACHE_NAME = 'constant-driver-cache-v3'; // Incremented version
+const CACHE_NAME = 'constant-driver-cache-v4'; // Incremented version
 
 // A list of critical files for the app shell.
 // We keep this list small to ensure the SW installs reliably.
 // The fetch handler below will cache other assets (like .tsx files) as they are requested.
 const URLS_TO_CACHE = [
   '/',
+  '/logo.png',
   '/manifest.json',
   '/icons/icon-192x192.png',
   '/icons/icon-512x512.png',
