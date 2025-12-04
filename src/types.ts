@@ -11,6 +11,7 @@ export enum FuelType {
 export enum Platform {
     UBER = 'Uber',
     NINE_NINE = '99',
+    PARTICULAR = 'Particular',
 }
 
 export interface FuelDetails {
@@ -23,6 +24,7 @@ export interface FuelDetails {
 export enum ExpenseCategory {
     FUEL = 'Combustível',
     RENTAL = 'Aluguel de Veículo',
+    WASHING = 'Lavagem',
     MAINTENANCE = 'Manutenção',
     FOOD = 'Alimentação',
     TOLLS = 'Pedágios',

@@ -1,43 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Constant Driver</title>
-    
-    <!-- PWA Meta Tags -->
-    <link rel="manifest" href="./manifest.json" />
-    <meta name="theme-color" content="#1a202c" />
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-      /* Simple scrollbar styling for a better dark mode experience */
-      ::-webkit-scrollbar {
-        width: 8px;
-      }
-      ::-webkit-scrollbar-track {
-        background: #1f2937; /* bg-gray-800 */
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #4b5563; /* bg-gray-600 */
-        border-radius: 4px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #6b7280; /* bg-gray-500 */
-      }
-    </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "react": "https://aistudiocdn.com/react@^19.2.0"
-  }
+const rootElement = document.getElementById('root');
+if (!rootElement) {
+  throw new Error("Could not find root element to mount to");
 }
-</script>
-</head>
-  <body class="bg-gray-900 text-gray-100 font-sans antialiased">
-    <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
-  </body>
-</html>
+
+const root = ReactDOM.createRoot(rootElement);
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+// Register the Service Worker for PWA functionality
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    // Use a simple absolute path, which is the most robust way.
+    navigator.serviceWorker.register('/sw.js')
+      .then(registration => {
+        console.log('Service Worker registered with scope:', registration.scope);
+      })
+      .catch(error => {
+        console.error('Service Worker registration failed:', error);
+      });
+  });
+}
